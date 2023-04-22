@@ -26,9 +26,32 @@ struct ARViewContainer: UIViewRepresentable {
    func makeUIView(context: Context) -> ARView {
       
       let arView = ARView(frame: .zero)
-      arView.debugOptions = ARView.DebugOptions.showAnchorOrigins
+//      arView.debugOptions = ARView.DebugOptions.showAnchorOrigins
 
-      bookScene.bookDescription?.isEnabled = false
+      //      bookScene.bookDescription?.isEnabled = false
+      if let bookDescription = bookScene.bookDescription {
+         
+         
+         if let textEntity = bookDescription.children[0].children[0] as? Entity {
+            var textModelComp: ModelComponent = (textEntity.components[ModelComponent])!
+            var material = SimpleMaterial()
+            material.baseColor = .color(.red)
+            textModelComp.materials[0] = material
+            
+            textModelComp.mesh = .generateText("Obj-C",
+                                               extrusionDepth: 0.01,
+                                               font: .systemFont(ofSize: 0.08),
+                                               containerFrame: CGRect(),
+                                               alignment: .left,
+                                               lineBreakMode: .byCharWrapping)
+            
+            textEntity.position = [-0.1,-0.05, 0.01]
+            
+            bookDescription.children[0].children[0].components.set(textModelComp)
+            
+//            try? textMesh.replace(with: MeshResource.generateText("Hello World").contents)
+         }
+      }
       
       // Add the box anchor to the scene
       arView.scene.anchors.append(bookScene)
@@ -36,7 +59,7 @@ struct ARViewContainer: UIViewRepresentable {
    }
    
    func updateUIView(_ uiView: ARView, context: Context) {
-      
+//      print("updateUIView called")
    }
    
 }
